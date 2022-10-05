@@ -9,14 +9,14 @@
 <table border="1">
     <tr>
         <th>Name</th>
-        <th>Last Name</th>
+        <th>Surname</th>
         <th>Age</th>
         <th>Roles</th>
-        <th>Email</th>
+
     </tr>
     <tr th:each="user : ${users}">
         <td th:text="${user.getName()}">name</td>
-        <td th:text="${user.getSurname()}">Surname</td>
+        <td th:text="${user.getSurname()}">surname</td>
         <td th:text="${user.getAge()}">age</td>
         <td th:text="${user.getRoles()}">roles</td>
 
