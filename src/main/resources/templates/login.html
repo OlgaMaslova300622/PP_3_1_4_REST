@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+<div>
+  <form method="post" action="/login">
+    <input name="username"/>
+    <input type="password" name="password"/>
+    <input type="submit"/>
+
+    <div th:if="${param.error}" style="color: red">
+      Неправильное имя или пароль
+    </div>
+
+  </form>
+  <p> admin - admin</p>
+  <p> user - user</p>
+  <p> user1 - user</p>
+
+</div>
+</body>
+</html>

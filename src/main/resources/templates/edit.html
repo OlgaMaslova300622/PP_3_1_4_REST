@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update user</title>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/admin/users/{id}(id=${user.getId()})/edit}" th:object="${user}">
+  <input type="text" hidden="true" th:field="*{id}" id="id">
+  <label for="login">User Login: </label>
+  <input type="text" th:field="*{login}" id="login">
+  <div style="color:red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Login Error</div>
+  <br>
+
+  <label for="password">User Password: </label>
+  <input type="password" th:field="*{password}" id="password">
+  <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
+  <br>
+
+  <label for="name">User Name: </label>
+  <input type="text" th:field="*{name}" id="name">
+  <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+  <br>
+
+  <label for="lastName">User surname: </label>
+  <input type="text" th:field="*{surname}" id="lastName">
+  <div style="color:red" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Surname Error</div>
+  <br>
+
+  <label for="age">User Age: </label>
+  <input type="text" th:field="*{age}" id="age">
+  <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age Error</div>
+  <br>
+
+  <ul class="checkbox-list" id="roles">
+    <li th:each="role : ${allRoles}">
+      <input type="checkbox" th:checked="${user.getRoles().contains(role)}"
+             th:value="${role.getId()} +':'+ ${role.getName()}"
+             th:text="${role.getName()}" th:field="*{roles}"/>
+      <div style="color:red" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}">Roles Error</div>
+    </li>
+  </ul>
+
+  <input type="submit" value="Update!"/>
+  <br>
+
+</form>
+</body>
+</html>

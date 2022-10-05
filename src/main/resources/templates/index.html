@@ -1,11 +1,37 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <title>Spring Security Example</title>
 </head>
 <body>
-<h1>Welcome to Index PAGE!</h1>
 
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Last Name</th>
+        <th>Age</th>
+        <th>Roles</th>
+        <th>Email</th>
+    </tr>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.getName()}">name</td>
+        <td th:text="${user.getSurname()}">Surname</td>
+        <td th:text="${user.getAge()}">age</td>
+        <td th:text="${user.getRoles()}">roles</td>
+
+        <td> <a th:href="@{/admin/users/{id}/edit(id=${user.getId()})}">Edit</a> </td>
+        <td> <a th:href="@{/admin/users/{id}/(id=${user.getId()})}">Show</a> </td>
+    </tr>
+</table>
+
+<form th:method="GET" th:action="@{/admin/users/addNewUser}">
+    <button type="submit">Create new user</button>
+</form>
+
+<form th:method="GET" th:action="@{/logout}">
+    <button type="submit">Logout</button>
+</form>
 
 </body>
 </html>
