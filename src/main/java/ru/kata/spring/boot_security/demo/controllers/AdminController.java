@@ -1,8 +1,7 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 
-
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,58 +14,47 @@ import javax.validation.Valid;
 
 
 @Controller
-@RequestMapping("/")
-public class PeopleController {
+@RequestMapping("/admin")
+public class AdminController {
 
     private final UserService userService;
 
     private final RoleService roleService;
 
 
-    public PeopleController(UserService userService, RoleService roleService) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "login";
-    }
 
 
-
-    @GetMapping("/admin/users")
-    public String getAllUsers(Model model){
-        //Получим всех людей из DAO и передадим на отображение в представление
-
-       model.addAttribute("users", userService.getAllUsers());
-
-        return  "index"; //файл index.html
-   }
-
-   @GetMapping("/user")
-   public String getCurrentUserInfo(Model model) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        model.addAttribute("user", user);
-        return "show";
-   }
-
-   @GetMapping("/admin/users/{id}")
-   public String getUserInfo(@PathVariable("id") int id, Model model) {
-        model.addAttribute("user", userService.getUserById(id));
-        return "show"; // файл show.html
-   }
-
-
-
-    @GetMapping("/admin/users/addNewUser")
-    public String newUser(@ModelAttribute("user") User user, Model model) {
+    @GetMapping("/users")
+    public String getAllUsers(@AuthenticationPrincipal User user, Model model){
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("user", userService.getUserByLogin(user.getLogin()));
         model.addAttribute("allRoles", roleService.getAllRoles());
 
-        return "new"; // файл new.html
+        return  "index";
     }
 
-    @PostMapping("/admin/users")
+
+    @GetMapping("/users/{id}")
+    public String getUserInfo(@PathVariable("id") int id, Model model) {
+        model.addAttribute("user", userService.getUserById(id));
+        return "show";
+    }
+
+
+
+    @GetMapping("/users/addNewUser")
+    public String newUser(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("allRoles", roleService.getAllRoles());
+        model.addAttribute("user", userService.getUserByLogin(user.getLogin()));
+        return "new";
+    }
+
+    @PostMapping("/users")
     public String createUser(@ModelAttribute("user") @Valid  User user, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()) {
             model.addAttribute("allRoles", roleService.getAllRoles());
@@ -78,28 +66,20 @@ public class PeopleController {
     }
 
 
-    @GetMapping("/admin/users/{id}/edit")
-    public String editUser(Model model, @PathVariable("id") int id){
-        model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("allRoles", roleService.getAllRoles());
-        return "edit";
-    }
 
-
-
-    @PatchMapping("/admin/users/{id}/edit")
+    @PatchMapping("/users/{id}")
     public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
 
         if(bindingResult.hasErrors()) {
             model.addAttribute("allRoles", roleService.getAllRoles());
-            return "edit";
+            return "index";
         }
 
         userService.updateUser(user);
         return "redirect:/admin/users";
     }
 
-    @DeleteMapping("/admin/users/{id}")
+    @DeleteMapping("/users/{id}")
     public String deleteUser(@PathVariable("id") int id) {
         userService.deleteUser(id);
 
